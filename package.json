@@ -1,0 +1,19 @@
+{
+  "name": "protonug",
+  "version": "1.0.0",
+  "description": "An updater for the GE (GloriousEggroll) custom Steam Proton builds.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "update": "node index.js",
+    "update-clean": "node index.js clean"
+  },
+  "keywords": [],
+  "author": "Mohammed Keyvanzadeh <mohammadkeyvanzade94@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^3.2.9",
+    "semver": "^7.3.7",
+    "tar": "^6.1.11"
+  }
+}

@@ -37,9 +37,13 @@ if (latestGeProton === undefined) {
   process.exit(1);
 }
 
+let firstCreation = false;
+
 const steamCompatibilityToolsPath = `${homedir()}/.steam/root/compatibilitytools.d`;
 
 if (!existsSync(steamCompatibilityToolsPath)) {
+  firstCreation = true;
+
   process.stdout.write(
     `Creating the Steam compatibility tools directory (${steamCompatibilityToolsPath})...`
   );
@@ -49,16 +53,18 @@ if (!existsSync(steamCompatibilityToolsPath)) {
   process.stdout.write(' Done\n');
 }
 
-const geProtonBuilds = await readdir(steamCompatibilityToolsPath).then(
-  (entries) =>
-    entries
-      .map((entry) => ({
-        entry,
-        version: convertNameToVersion(entry, true)
-      }))
-      .sort((a, b) => semver.compare(b.version, a.version))
-);
-const latestVersion = convertNameToVersion(latestGeProton.name);
+const geProtonBuilds = firstCreation
+  ? []
+  : await readdir(steamCompatibilityToolsPath).then((entries) =>
+      entries
+        .map((entry) => ({
+          entry,
+          version: convertNameToVersion(entry, true)
+        }))
+        .sort((a, b) => semver.compare(b.version, a.version))
+    );
+const latestGeProtonName = latestGeProton.name;
+const latestVersion = convertNameToVersion(latestGeProtonName);
 
 let getLatestGeProton = false;
 let install = false;
@@ -70,9 +76,11 @@ if (geProtonBuilds.length === 0) {
 } else {
   console.log('Found existing GE Proton builds');
 
-  if (semver.gt(latestVersion, geProtonBuilds[0].version)) {
+  const latestExistingGeVer = geProtonBuilds[0].version;
+
+  if (semver.gt(latestVersion, latestExistingGeVer)) {
     console.log(
-      `Found a newer version of GE Proton! (${latestVersion} > ${geProtonBuilds[0].version})`
+      `Found a newer version of GE Proton! (${latestVersion} > ${latestExistingGeVer})`
     );
 
     getLatestGeProton = true;
@@ -91,7 +99,7 @@ if (!getLatestGeProton) {
   process.exit(0);
 }
 
-const downloadLogPrefix = `Downloading the latest GE Proton build tarball... (${latestGeProton.name})`;
+const downloadLogPrefix = `Downloading the latest GE Proton build tarball... (${latestGeProtonName})`;
 
 process.stdout.write(downloadLogPrefix);
 
@@ -99,10 +107,10 @@ const res = await fetch(latestGeProton.browser_download_url, {
   headers: { Accept: 'application/octet-stream' }
 });
 const geProtonStream = res.body.pipe(
-  createWriteStream(`./${latestGeProton.name}`)
+  createWriteStream(`./${latestGeProtonName}`)
 );
 
-let downloadSize = res.headers.get('content-length');
+const downloadSize = res.headers.get('content-length');
 let downloadedSize = 0;
 
 const loadingLines = ['\\', '|', '/', '-'];
@@ -139,7 +147,7 @@ await new Promise((resolve) => {
 process.stdout.write('Extracting the latest GE Proton build from tarball...');
 
 await extract({
-  file: `./${latestGeProton.name}`,
+  file: `./${latestGeProtonName}`,
   C: steamCompatibilityToolsPath
 });
 
@@ -147,7 +155,7 @@ process.stdout.write(
   ' Done\nRemoving the downloaded GE Proton build tarball after extraction...'
 );
 
-await unlink(`./${latestGeProton.name}`);
+await unlink(`./${latestGeProtonName}`);
 
 process.stdout.write(' Done\n');
 

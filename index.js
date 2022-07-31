@@ -3,7 +3,7 @@ import semver from 'semver';
 import { extract } from 'tar';
 import { homedir } from 'node:os';
 import { existsSync, createWriteStream } from 'node:fs';
-import { mkdir, readdir, unlink, rmdir } from 'node:fs/promises';
+import { mkdir, readdir, unlink, rm } from 'node:fs/promises';
 
 process.stdout.write('Getting the latest release of GE Proton...');
 
@@ -165,7 +165,9 @@ if (removeGeProtonBuilds) {
   for (const geProtonBuild of geProtonBuilds) {
     process.stdout.write(`Removing ${geProtonBuild.entry}...`);
 
-    await rmdir(`${steamCompatibilityToolsPath}/${geProtonBuild.entry}`);
+    await rm(`${steamCompatibilityToolsPath}/${geProtonBuild.entry}`, {
+      recursive: true
+    });
 
     process.stdout.write(' Done\n');
   }

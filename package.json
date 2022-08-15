@@ -10,6 +10,11 @@
   "keywords": [],
   "author": "Mohammed Keyvanzadeh <mohammadkeyvanzade94@gmail.com>",
   "license": "MIT",
+  "homepage": "https://github.com/VoltrexMaster/protonug",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VoltrexMaster/protonug"
+  },
   "dependencies": {
     "node-fetch": "^3.2.10",
     "semver": "^7.3.7",

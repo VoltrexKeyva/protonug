@@ -175,7 +175,7 @@ await extract({
   C: steamCompatibilityToolsPath
 });
 
-process.stdout.write(' Done');
+process.stdout.write(' Done\n');
 
 process.stdout.write(
   'Removing the downloaded GE Proton build tarball after extraction...'

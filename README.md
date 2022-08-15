@@ -2,37 +2,40 @@
 
 An installer and updater for the [GE (GloriousEggroll) custom Steam Proton](https://github.com/GloriousEggroll/proton-ge-custom) builds.
 
-⚠️ **Note: this currently only works on Linux, if you wish to add support for other operating systems, open a pull request!**
+⚠️ **Note: this currently only works on Linux.**
 
-## Prerequisites
+## Prerequisite
 
-1. The Git CLI ([official website](https://git-scm.com/)).
-2. The Node.js runtime ([official website](https://nodejs.org/)).
+The Node.js runtime ([official website](https://nodejs.org/)).
 
-## Setup
+## Installation
 
-First, clone this repository using the Git CLI:
-
-```console
-$ git clone https://github.com/VoltrexMaster/protonug
-```
-
-Then change the current working directory to the root directory of this repository you just cloned:
+Install Protonug globally using npm with the `--global` flag:
 
 ```console
-$ cd protonug
-```
-
-And finally, install the dependencies of the installer/updater using the npm CLI normally bundled with the Node.js runtime:
-
-```console
-$ npm install
+$ npm install --global protonug
 ```
 
 ## Usage
 
-To run the installer/updater, simply run `npm run update` in the root directory of the repository.
+To run the installer/updater, simply run:
 
-If you want the updater to remove the older existing GE Proton builds after updating, you can run `npm run update-clean` instead.
+```console
+$ protonug update
+```
+
+If you want Protonug to remove the older existing GE Proton builds after updating, you can run the `update` command with the `--clean` flag (`-c` for short):
+
+```console
+$ protonug update --clean
+```
 
 **Note: this will install GE Proton if the `~/.steam/root/compatibilitytools.d` directory either doesn't exist or is empty.**
+
+# Uninstallation
+
+You can uninstall Protonug using npm:
+
+```console
+$ npm remove --global protonug
+```

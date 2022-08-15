@@ -5,8 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "update": "node index.js",
-    "update-clean": "node index.js clean"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "Mohammed Keyvanzadeh <mohammadkeyvanzade94@gmail.com>",
@@ -14,6 +13,8 @@
   "dependencies": {
     "node-fetch": "^3.2.10",
     "semver": "^7.3.7",
-    "tar": "^6.1.11"
-  }
+    "tar": "^6.1.11",
+    "yargs": "^17.5.1"
+  },
+  "bin": "index.js"
 }

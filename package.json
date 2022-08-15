@@ -1,7 +1,7 @@
 {
   "name": "protonug",
   "version": "1.0.1",
-  "description": "An updater for the GE (GloriousEggroll) custom Steam Proton builds.",
+  "description": "An installer/updater for the GE (GloriousEggroll) custom Steam Proton builds.",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -16,10 +16,10 @@
     "url": "https://github.com/VoltrexMaster/protonug"
   },
   "dependencies": {
+    "commander": "^9.4.0",
     "node-fetch": "^3.2.10",
     "semver": "^7.3.7",
-    "tar": "^6.1.11",
-    "yargs": "^17.5.1"
+    "tar": "^6.1.11"
   },
   "bin": "index.js"
 }

@@ -1,19 +1,26 @@
 #!/usr/bin/env node
 
-import yargs from 'yargs/yargs';
-import { hideBin } from 'yargs/helpers';
+import { Command } from 'commander';
+import { readFile } from 'node:fs/promises';
 
-const argv = yargs(hideBin(process.argv))
-  .command('update [-c|--clean]', 'Update the GE Proton build.', (yargs) =>
-    yargs.option('clean', {
-      alias: 'c',
-      type: 'boolean',
-      description: 'Remove the old existing GE Proton builds.'
-    })
-  )
-  .demandCommand(1)
-  .strict()
-  .parse();
+const { name, description, version } = JSON.parse(
+  await readFile('package.json')
+);
+
+const program = new Command()
+  .name(name)
+  .description(description)
+  .version(version)
+  .showHelpAfterError();
+
+const command = program
+  .command('update')
+  .description('Update the GE Proton build.')
+  .option('-c, --clean', 'Remove the older existing GE proton builds.');
+
+program.parse();
+
+const options = command.opts();
 
 import fetch from 'node-fetch';
 import semver from 'semver';
@@ -102,7 +109,7 @@ if (geProtonBuilds.length === 0) {
 
     getLatestGeProton = true;
 
-    if (argv.clean) {
+    if (options.clean) {
       console.log('Deferring removal of the existing GE Proton builds...');
 
       removeGeProtonBuilds = true;

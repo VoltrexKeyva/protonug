@@ -1,16 +1,12 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import { readFile } from 'node:fs/promises';
-
-const { name, description, version } = JSON.parse(
-  await readFile('package.json')
-);
 
 const program = new Command()
-  .name(name)
-  .description(description)
-  .version(version)
+  .name('protonug')
+  .description(
+    'An installer/updater for the GE (GloriousEggroll) custom Steam Proton builds.'
+  )
   .showHelpAfterError();
 
 const command = program
@@ -26,6 +22,7 @@ import fetch from 'node-fetch';
 import semver from 'semver';
 import { extract } from 'tar';
 import { homedir } from 'node:os';
+import { join } from 'node:path';
 import { existsSync, createWriteStream } from 'node:fs';
 import { mkdir, readdir, unlink, rm } from 'node:fs/promises';
 
@@ -63,7 +60,12 @@ if (latestGeProton === undefined) {
 
 let firstCreation = false;
 
-const steamCompatibilityToolsPath = `${homedir()}/.steam/root/compatibilitytools.d`;
+const steamCompatibilityToolsPath = join(
+  homedir(),
+  '.steam',
+  'root',
+  'compatibilitytools.d'
+);
 
 if (!existsSync(steamCompatibilityToolsPath)) {
   firstCreation = true;
@@ -130,9 +132,7 @@ process.stdout.write(downloadLogPrefix);
 const res = await fetch(latestGeProton.browser_download_url, {
   headers: { Accept: 'application/octet-stream' }
 });
-const geProtonStream = res.body.pipe(
-  createWriteStream(`./${latestGeProtonName}`)
-);
+const geProtonStream = res.body.pipe(createWriteStream(latestGeProtonName));
 
 const downloadSize = res.headers.get('content-length');
 let downloadedSize = 0;
@@ -171,15 +171,17 @@ await new Promise((resolve) => {
 process.stdout.write('Extracting the latest GE Proton build from tarball...');
 
 await extract({
-  file: `./${latestGeProtonName}`,
+  file: latestGeProtonName,
   C: steamCompatibilityToolsPath
 });
 
+process.stdout.write(' Done');
+
 process.stdout.write(
-  ' Done\nRemoving the downloaded GE Proton build tarball after extraction...'
+  'Removing the downloaded GE Proton build tarball after extraction...'
 );
 
-await unlink(`./${latestGeProtonName}`);
+await unlink(latestGeProtonName);
 
 process.stdout.write(' Done\n');
 
@@ -189,7 +191,7 @@ if (removeGeProtonBuilds) {
   for (const geProtonBuild of geProtonBuilds) {
     process.stdout.write(`Removing ${geProtonBuild.entry}...`);
 
-    await rm(`${steamCompatibilityToolsPath}/${geProtonBuild.entry}`, {
+    await rm(join(steamCompatibilityToolsPath, geProtonBuild.entry), {
       recursive: true
     });
 

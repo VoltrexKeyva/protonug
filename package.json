@@ -1,6 +1,6 @@
 {
   "name": "protonug",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An updater for the GE (GloriousEggroll) custom Steam Proton builds.",
   "main": "index.js",
   "type": "module",

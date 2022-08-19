@@ -28,7 +28,16 @@ import { mkdir, readdir, unlink, rm } from 'node:fs/promises';
 
 process.stdout.write('Getting the latest release of GE Proton...');
 
-const latestRelease = await fetch(
+interface Asset {
+  name: string;
+  browser_download_url: string;
+}
+
+interface Release {
+  assets: Asset[];
+}
+
+const latestRelease = (await fetch(
   'https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases/latest',
   { headers: { Accept: 'application/vnd.github+json' } }
 )
@@ -40,7 +49,7 @@ const latestRelease = await fetch(
     );
 
     process.exit(1);
-  });
+  })) as Release;
 
 process.stdout.write(' Done\n');
 
@@ -132,18 +141,20 @@ process.stdout.write(downloadLogPrefix);
 const res = await fetch(latestGeProton.browser_download_url, {
   headers: { Accept: 'application/octet-stream' }
 });
-const geProtonStream = res.body.pipe(createWriteStream(latestGeProtonName));
+const geProtonStream = (res.body as NodeJS.ReadableStream).pipe(
+  createWriteStream(latestGeProtonName)
+);
 
-const downloadSize = res.headers.get('content-length');
+const downloadSize = parseInt(res.headers.get('content-length') as string);
 let downloadedSize = 0;
 
 const loadingLines = ['\\', '|', '/', '-'];
 const loadingLinesLen = loadingLines.length;
 let loadingLineIndex = 0;
 
-await new Promise((resolve) => {
+await new Promise<void>((resolve) => {
   const loadingInterval = setInterval(() => {
-    process.stdout.clearLine();
+    process.stdout.clearLine(0);
     process.stdout.cursorTo(0);
     process.stdout.write(
       `${loadingLines[loadingLineIndex++]} ${downloadLogPrefix} (${Math.trunc(
@@ -156,7 +167,7 @@ await new Promise((resolve) => {
     if (downloadedSize >= downloadSize) {
       clearInterval(loadingInterval);
 
-      process.stdout.clearLine();
+      process.stdout.clearLine(0);
       process.stdout.cursorTo(0);
       process.stdout.write('✓ Downloaded the latest GE Proton build tarball\n');
       resolve();
@@ -172,7 +183,7 @@ process.stdout.write('Extracting the latest GE Proton build from tarball...');
 
 await extract({
   file: latestGeProtonName,
-  C: steamCompatibilityToolsPath
+  cwd: steamCompatibilityToolsPath
 });
 
 process.stdout.write(' Done\n');
@@ -205,8 +216,10 @@ console.log(
   } GE Proton ${latestVersion}`
 );
 
-function convertNameToVersion(name, isDir = false) {
-  return `${name
-    .match(isDir ? geProtonDirNameReg : geProtonFileNameReg)[1]
-    .replaceAll('-', '.')}.0`;
+function convertNameToVersion(name: string, isDir = false) {
+  return `${(
+    name.match(
+      isDir ? geProtonDirNameReg : geProtonFileNameReg
+    ) as RegExpMatchArray
+  )[1].replaceAll('-', '.')}.0`;
 }

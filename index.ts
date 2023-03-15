@@ -18,7 +18,7 @@ program.parse();
 
 const options = command.opts();
 
-import fetch from 'node-fetch';
+import { fetch } from 'undici';
 import semver from 'semver';
 import { extract } from 'tar';
 import { homedir } from 'node:os';
@@ -138,12 +138,11 @@ const downloadLogPrefix = `Downloading the latest GE Proton build tarball... (${
 
 process.stdout.write(downloadLogPrefix);
 
+const geProtonStream = createWriteStream(latestGeProtonName);
 const res = await fetch(latestGeProton.browser_download_url, {
   headers: { Accept: 'application/octet-stream' }
 });
-const geProtonStream = (res.body as NodeJS.ReadableStream).pipe(
-  createWriteStream(latestGeProtonName)
-);
+const reader = (res.body as ReadableStream<unknown>).getReader();
 
 const downloadSize = parseInt(res.headers.get('content-length') as string);
 let downloadedSize = 0;
@@ -152,7 +151,8 @@ const loadingLines = ['\\', '|', '/', '-'];
 const loadingLinesLen = loadingLines.length;
 let loadingLineIndex = 0;
 
-await new Promise<void>((resolve) => {
+// eslint-disable-next-line no-async-promise-executor
+await new Promise<void>(async (resolve) => {
   const loadingInterval = setInterval(() => {
     process.stdout.clearLine(0);
     process.stdout.cursorTo(0);
@@ -177,7 +177,12 @@ await new Promise<void>((resolve) => {
 
     loadingLineIndex %= loadingLinesLen;
   }, 250);
+
+  let data = null;
+  while (!(data = await reader.read()).done) geProtonStream.write(data.value);
 });
+
+geProtonStream.end();
 
 process.stdout.write('Extracting the latest GE Proton build from tarball...');
 

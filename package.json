@@ -27,11 +27,11 @@
     "@types/node": "^18.15.11",
     "@types/semver": "^7.3.13",
     "@types/tar": "^6.1.4",
-    "@typescript-eslint/eslint-plugin": "^5.57.0",
-    "@typescript-eslint/parser": "^5.57.0",
-    "eslint": "^8.37.0",
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/parser": "^5.57.1",
+    "eslint": "^8.38.0",
     "prettier": "^2.8.7",
-    "typescript": "^5.0.2"
+    "typescript": "^5.0.4"
   },
   "bin": "index.js"
 }

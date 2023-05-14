@@ -151,7 +151,7 @@ const loadingLines = ['\\', '|', '/', '-'];
 const loadingLinesLen = loadingLines.length;
 let loadingLineIndex = 0;
 
-// eslint-disable-next-line no-async-promise-executor
+// eslint-disable-next-line no-async-promise-executor, @typescript-eslint/no-misused-promises
 await new Promise<void>(async (resolve) => {
   const loadingInterval = setInterval(() => {
     process.stdout.clearLine(0);

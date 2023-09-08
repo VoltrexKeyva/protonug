@@ -15,7 +15,7 @@
   "homepage": "https://github.com/VoltrexKeyva/protonug",
   "repository": {
     "type": "git",
-    "url": "https://github.com/VoltrexKeyva/protonug"
+    "url": "git+https://github.com/VoltrexKeyva/protonug.git"
   },
   "dependencies": {
     "commander": "^11.0.0",
@@ -33,5 +33,7 @@
     "prettier": "^3.0.3",
     "typescript": "^5.2.2"
   },
-  "bin": "index.js"
+  "bin": {
+    "protonug": "index.js"
+  }
 }

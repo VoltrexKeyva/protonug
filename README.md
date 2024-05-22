@@ -4,7 +4,7 @@
 
 An installer and updater for the [GE (GloriousEggroll) custom Steam Proton](https://github.com/GloriousEggroll/proton-ge-custom) builds.
 
-⚠️ **Note: this currently only works on Linux.**
+⚠️ **Note: this only works on Linux distributions.**
 
 ## Prerequisite
 

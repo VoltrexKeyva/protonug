@@ -18,7 +18,6 @@ program.parse();
 
 const options = command.opts();
 
-import { fetch } from 'undici';
 import semver from 'semver';
 import { extract } from 'tar';
 import { homedir } from 'node:os';

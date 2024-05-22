@@ -20,8 +20,7 @@
   "dependencies": {
     "commander": "^12.1.0",
     "semver": "^7.6.2",
-    "tar": "^7.1.0",
-    "undici": "^6.18.0"
+    "tar": "^7.1.0"
   },
   "devDependencies": {
     "@types/node": "^20.12.12",
